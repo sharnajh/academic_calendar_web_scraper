@@ -9,18 +9,23 @@ driver = webdriver.Chrome("./chromedriver")
 driver.get("https://www.bmcc.cuny.edu/academics/academic-calendar/winter-2021/")
 content = driver.page_source
 soup = BeautifulSoup(content)
+
 start_dates = []
 end_dates = []
 subjects = []
+
 for date in soup.find_all("td", attrs={"class": "column-1"}):
     data = date.text.strip()
+
     if "-" in date.text:
+        # Start Date
         b = data.split("-")
         start = b[0].strip().split(" ")
         start_month = time.strptime(start[0], "%B").tm_mon
         start_day = start[1]
         start_date = f'{start_month}/{start_day}/{year}'
 
+        # End Date
         end = b[1].strip().split(" ")
         if not end[0].isnumeric():
             end_month = time.strptime(end[0], "%B").tm_mon
@@ -34,6 +39,7 @@ for date in soup.find_all("td", attrs={"class": "column-1"}):
         month = time.strptime(m[0], "%B").tm_mon
         day = m[1]
         start_date = end_date = f'{month}/{day}/{year}'
+
     start_dates.append(start_date)
     end_dates.append(end_date)
 
