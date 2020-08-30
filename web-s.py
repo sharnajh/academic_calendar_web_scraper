@@ -4,7 +4,7 @@ import pandas as pd
 import time
 
 driver = webdriver.Chrome("./chromedriver")
-driver.get("https://www.bmcc.cuny.edu/academics/academic-calendar/")
+driver.get("https://www.bmcc.cuny.edu/academics/academic-calendar/spring-2021/")
 content = driver.page_source
 soup = BeautifulSoup(content)
 start_dates = []
@@ -39,5 +39,5 @@ for event in soup.find_all("td", attrs={"class": "column-3"}):
     subjects.append(event.text.strip())
 
 df = pd.DataFrame({'Subject': subjects, 'Start Date': start_dates,
-                  'Start Time': "12:00 AM", 'End Date': end_dates, 'End Time': "11:59 PM", "All day event": "TRUE", "Description": "", "Location": ""})
-df.to_csv('bmcc2020_calendar.csv', index=False, encoding='utf-8')
+                   'Start Time': "12:00 AM", 'End Date': end_dates, 'End Time': "11:59 PM", "All day event": "TRUE", "Description": "", "Location": ""})
+df.to_csv('spring2021_calendar.csv', index=False, encoding='utf-8')
