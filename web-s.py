@@ -18,8 +18,9 @@ for date in soup.find_all("td", attrs={"class": "column-1"}):
     data = date.text.strip()
 
     if "-" in date.text:
-        # Start Date
         b = data.split("-")
+        
+        # Start Date
         start = b[0].strip().split(" ")
         start_month = time.strptime(start[0], "%B").tm_mon
         start_day = start[1]
