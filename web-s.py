@@ -48,5 +48,7 @@ for event in soup.find_all("td", attrs={"class": "column-3"}):
     subjects.append(event.text.strip())
 
 df = pd.DataFrame({'Subject': subjects, 'Start Date': start_dates,
-                   'Start Time': "12:00 AM", 'End Date': end_dates, 'End Time': "11:59 PM", "All day event": "TRUE", "Description": "", "Location": ""})
+                   'Start Time': "12:00 AM", 'End Date': end_dates,
+                   'End Time': "11:59 PM", "All day event": "TRUE",
+                   "Description": "", "Location": ""})
 df.to_csv('winter2021_calendar.csv', index=False, encoding='utf-8')
