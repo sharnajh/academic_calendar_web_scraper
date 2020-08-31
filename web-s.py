@@ -33,8 +33,10 @@ for event in events:
 def check_month(cmonth):
     if calendar["Start Date"]:
         ldate = calendar["Start Date"][-1].split("/")
-        if not int(cmonth) >= int(ldate[0]):
-            formatd = "/".join([*ldate[:-1], str(int(year) - 1)])
+        lmonth = ldate[0]
+        if not int(cmonth) >= int(lmonth):
+            lyear = str(int(year) - 1)
+            formatd = "/".join([*ldate[:-1], lyear])
             calendar["Start Date"][-1] = calendar["End Date"][-1] = formatd
 
 
@@ -43,14 +45,12 @@ for date in dates:
 
     if "-" in date.text:
         b = data.split("-")
-
         # Start Date
         start = b[0].strip().split(" ")
         start_month = datetime.strptime(start[0], "%B").month
-        start_date = f'{start_month}/{start[1]}/{year}'
-
+        start_day = start[1]
+        start_date = f'{start_month}/{start_day}/{year}'
         check_month(start_month)
-
         # End Date
         end = b[1].strip().split(" ")
         if not end[0].isnumeric():
@@ -63,12 +63,11 @@ for date in dates:
     else:
         m = data.split(" ")
         month = datetime.strptime(m[0], "%B").month
+        day = m[1]
         check_month(month)
-        start_date = end_date = f'{month}/{m[1]}/{year}'
-
+        start_date = end_date = f'{month}/{day}/{year}'
     calendar["Start Date"].append(start_date)
     calendar["End Date"].append(end_date)
-
 
 df = pd.DataFrame(calendar)
 df.to_csv(f'{season}{year}_calendar.csv', index=False, encoding='utf-8')
