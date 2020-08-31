@@ -19,11 +19,25 @@ calendar = {
     "Location": ""
 }
 
-year = soup.find("h2", attrs={
-                  "class": "tablepress-table-name tablepress-table-name-id-95"}).text.strip().split(" ")[1]
+title = soup.find("h1", attrs={"class": "entry-title"}).text.strip().split(" ")
+season = title[0]
+year = title[1]
 
-for date in soup.find_all("td", attrs={"class": "column-1"}):
+dates = soup.find_all("td", attrs={"class": "column-1"})
+events = soup.find_all("td", attrs={"class": "column-3"})
+
+for date in dates:
     data = date.text.strip()
+
+    def check_month(cmonth):
+        if len(calendar["Start Date"]) >= 1:
+            ldate = calendar["Start Date"][-1].split("/")
+            if not int(cmonth) >= int(ldate[0]):
+                ldate.pop()
+                lyear = str(int(year) - 1)
+                formatd = "/".join([*ldate, lyear])
+                calendar["Start Date"][-1] = formatd
+                calendar["End Date"][-1] = formatd
 
     if "-" in date.text:
         b = data.split("-")
@@ -31,8 +45,9 @@ for date in soup.find_all("td", attrs={"class": "column-1"}):
         # Start Date
         start = b[0].strip().split(" ")
         start_month = datetime.strptime(start[0], "%B").month
-        start_day = start[1]
-        start_date = f'{start_month}/{start_day}/{year}'
+        start_date = f'{start_month}/{start[1]}/{year}'
+
+        check_month(start_month)
 
         # End Date
         end = b[1].strip().split(" ")
@@ -46,14 +61,14 @@ for date in soup.find_all("td", attrs={"class": "column-1"}):
     else:
         m = data.split(" ")
         month = datetime.strptime(m[0], "%B").month
-        day = m[1]
-        start_date = end_date = f'{month}/{day}/{year}'
+        check_month(month)
+        start_date = end_date = f'{month}/{m[1]}/{year}'
 
     calendar["Start Date"].append(start_date)
     calendar["End Date"].append(end_date)
 
-for event in soup.find_all("td", attrs={"class": "column-3"}):
+for event in events:
     calendar["Subject"].append(event.text.strip())
 
 df = pd.DataFrame(calendar)
-df.to_csv('winter2021_calendar.csv', index=False, encoding='utf-8')
+df.to_csv(f'{season}{year}_calendar.csv', index=False, encoding='utf-8')
