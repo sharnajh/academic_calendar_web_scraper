@@ -31,7 +31,7 @@ for event in events:
 
 
 def check_month(cmonth):
-    if len(calendar["Start Date"]) >= 1:
+    if calendar["Start Date"]:
         ldate = calendar["Start Date"][-1].split("/")
         if not int(cmonth) >= int(ldate[0]):
             formatd = "/".join([*ldate[:-1], str(int(year) - 1)])
