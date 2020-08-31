@@ -26,6 +26,8 @@ year = title[1]
 dates = soup.find_all("td", attrs={"class": "column-1"})
 events = soup.find_all("td", attrs={"class": "column-3"})
 
+for event in events:
+    calendar["Subject"].append(event.text.strip())
 
 def check_month(cmonth):
     if len(calendar["Start Date"]) >= 1:
@@ -36,7 +38,6 @@ def check_month(cmonth):
             formatd = "/".join([*ldate, lyear])
             calendar["Start Date"][-1] = formatd
             calendar["End Date"][-1] = formatd
-
 
 for date in dates:
     data = date.text.strip()
@@ -69,8 +70,6 @@ for date in dates:
     calendar["Start Date"].append(start_date)
     calendar["End Date"].append(end_date)
 
-for event in events:
-    calendar["Subject"].append(event.text.strip())
 
 df = pd.DataFrame(calendar)
 df.to_csv(f'{season}{year}_calendar.csv', index=False, encoding='utf-8')
