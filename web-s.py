@@ -21,7 +21,7 @@ calendar = {
 
 title = soup.find("h1", attrs={"class": "entry-title"}).text.strip().split(" ")
 season = title[0]
-year = title[1]
+year = title[-1]
 
 dates = soup.find_all("td", attrs={"class": "column-1"})
 events = soup.find_all("td", attrs={"class": "column-3"})
