@@ -29,13 +29,14 @@ events = soup.find_all("td", attrs={"class": "column-3"})
 for event in events:
     calendar["Subject"].append(event.text.strip())
 
+
 def check_month(cmonth):
     if len(calendar["Start Date"]) >= 1:
         ldate = calendar["Start Date"][-1].split("/")
         if not int(cmonth) >= int(ldate[0]):
             formatd = "/".join([*ldate[:-1], str(int(year) - 1)])
-            calendar["Start Date"][-1] = formatd
-            calendar["End Date"][-1] = formatd
+            calendar["Start Date"][-1] = calendar["End Date"][-1] = formatd
+
 
 for date in dates:
     data = date.text.strip()
