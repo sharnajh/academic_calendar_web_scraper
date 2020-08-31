@@ -26,18 +26,20 @@ year = title[1]
 dates = soup.find_all("td", attrs={"class": "column-1"})
 events = soup.find_all("td", attrs={"class": "column-3"})
 
+
+def check_month(cmonth):
+    if len(calendar["Start Date"]) >= 1:
+        ldate = calendar["Start Date"][-1].split("/")
+        if not int(cmonth) >= int(ldate[0]):
+            ldate.pop()
+            lyear = str(int(year) - 1)
+            formatd = "/".join([*ldate, lyear])
+            calendar["Start Date"][-1] = formatd
+            calendar["End Date"][-1] = formatd
+
+
 for date in dates:
     data = date.text.strip()
-
-    def check_month(cmonth):
-        if len(calendar["Start Date"]) >= 1:
-            ldate = calendar["Start Date"][-1].split("/")
-            if not int(cmonth) >= int(ldate[0]):
-                ldate.pop()
-                lyear = str(int(year) - 1)
-                formatd = "/".join([*ldate, lyear])
-                calendar["Start Date"][-1] = formatd
-                calendar["End Date"][-1] = formatd
 
     if "-" in date.text:
         b = data.split("-")
