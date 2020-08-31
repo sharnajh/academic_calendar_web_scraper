@@ -1,7 +1,7 @@
 from selenium import webdriver
 from bs4 import BeautifulSoup
 import pandas as pd
-import time
+from datetime import datetime
 
 year = 2021
 
@@ -19,17 +19,17 @@ for date in soup.find_all("td", attrs={"class": "column-1"}):
 
     if "-" in date.text:
         b = data.split("-")
-        
+
         # Start Date
         start = b[0].strip().split(" ")
-        start_month = time.strptime(start[0], "%B").tm_mon
+        start_month = datetime.strptime(start[0], "%B").month
         start_day = start[1]
         start_date = f'{start_month}/{start_day}/{year}'
 
         # End Date
         end = b[1].strip().split(" ")
         if not end[0].isnumeric():
-            end_month = time.strptime(end[0], "%B").tm_mon
+            end_month = datetime.strptime(end[0], "%B").month
             end_day = end[1]
         else:
             end_month = start_month
@@ -37,7 +37,7 @@ for date in soup.find_all("td", attrs={"class": "column-1"}):
         end_date = f'{end_month}/{end_day}/{year}'
     else:
         m = data.split(" ")
-        month = time.strptime(m[0], "%B").tm_mon
+        month = datetime.strptime(m[0], "%B").month
         day = m[1]
         start_date = end_date = f'{month}/{day}/{year}'
 
