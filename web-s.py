@@ -4,7 +4,7 @@ import pandas as pd
 from datetime import datetime
 
 driver = webdriver.Chrome("./chromedriver")
-driver.get("https://www.bmcc.cuny.edu/academics/academic-calendar/winter-2021/")
+driver.get("https://www.bmcc.cuny.edu/academics/academic-calendar/spring-2021/")
 content = driver.page_source
 soup = BeautifulSoup(content)
 
