@@ -4,9 +4,11 @@ import pandas as pd
 from datetime import datetime
 
 urls = [
-    "https://www.bmcc.cuny.edu/academics/academic-calendar/fall-2020/",
-    "https://www.bmcc.cuny.edu/academics/academic-calendar/winter-2021/",
-    "https://www.bmcc.cuny.edu/academics/academic-calendar/spring-2021/"
+    # "https://www.bmcc.cuny.edu/academics/academic-calendar/fall-2020/",
+    # "https://www.bmcc.cuny.edu/academics/academic-calendar/winter-2021/",
+    # "https://www.bmcc.cuny.edu/academics/academic-calendar/spring-2021/",
+    "https://www.bmcc.cuny.edu/academics/academic-calendar/summer-6w1-2021/",
+    "https://www.bmcc.cuny.edu/academics/academic-calendar/fall-2021/"
 ]
 
 def main():
@@ -17,7 +19,7 @@ def generate_calendar(url):
     driver = webdriver.Chrome("./chromedriver")
     driver.get(url)
     content = driver.page_source
-    soup = BeautifulSoup(content)
+    soup = BeautifulSoup(content, features="html.parser")
 
     calendar = {
         "Subject": [],
@@ -37,6 +39,10 @@ def generate_calendar(url):
     dates = soup.find_all("td", attrs={"class": "column-1"})
     events = soup.find_all("td", attrs={"class": "column-3"})
 
+    if (dates[0].text.strip()==""):
+        dates.pop(0)
+        events.pop(0)
+
     for event in events:
         calendar["Subject"].append(event.text.strip())
 
@@ -46,7 +52,11 @@ def generate_calendar(url):
             ldate = calendar["Start Date"][-1].split("/")
             lmonth = ldate[0]
             if not int(cmonth) >= int(lmonth):
-                lyear = str(int(year) - 1)
+                lyear = 2021
+                if (year == '2021-1'):
+                    lyear = str(int(2021) - 1)
+                else:
+                    lyear = str(int(year) - 1)
                 formatd = "/".join([*ldate[:-1], lyear])
                 calendar["Start Date"][-1] = calendar["End Date"][-1] = formatd
 
@@ -58,14 +68,14 @@ def generate_calendar(url):
             b = data.split("-")
             # Start Date
             start = b[0].strip().split(" ")
-            start_month = datetime.strptime(start[0], "%B").month
+            start_month = datetime.strptime(start[0], '%B').month
             start_day = start[1]
             start_date = f'{start_month}/{start_day}/{year}'
             check_month(start_month)
             # End Date
             end = b[1].strip().split(" ")
             if not end[0].isnumeric():
-                end_month = datetime.strptime(end[0], "%B").month
+                end_month = datetime.strptime(end[0], '%B').month
                 end_day = end[1]
             else:
                 end_month = start_month
@@ -73,7 +83,7 @@ def generate_calendar(url):
             end_date = f'{end_month}/{end_day}/{year}'
         else:
             m = data.split(" ")
-            month = datetime.strptime(m[0], "%B").month
+            month = datetime.strptime(m[0], '%B').month
             day = m[1]
             check_month(month)
             start_date = end_date = f'{month}/{day}/{year}'
